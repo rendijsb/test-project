@@ -6,6 +6,7 @@ namespace App\Http\Requests\Customers;
 
 use App\Http\Resources\Customers\CustomerResource;
 use App\Models\Customers\Customer;
+use App\Policies\Customers\CustomerPolicy;
 use App\Services\Helpers\ValidationHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -15,7 +16,7 @@ class GetCustomerByIdRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can(CustomerPolicy::VIEW, Customer::class);
     }
 
     public function rules(): array

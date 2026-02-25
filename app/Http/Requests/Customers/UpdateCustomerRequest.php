@@ -6,6 +6,7 @@ namespace App\Http\Requests\Customers;
 
 use App\Http\Resources\Customers\CustomerResource;
 use App\Models\Customers\Customer;
+use App\Policies\Customers\CustomerPolicy;
 use App\Services\Helpers\ValidationHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -25,7 +26,7 @@ class UpdateCustomerRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can(CustomerPolicy::UPDATE, Customer::class);
     }
 
     public function rules(): array
@@ -71,7 +72,7 @@ class UpdateCustomerRequest extends FormRequest
         return $this->input(self::EMAIL);
     }
 
-    public function getPhone(): string
+    public function getPhone(): ?string
     {
         return $this->input(self::PHONE);
     }

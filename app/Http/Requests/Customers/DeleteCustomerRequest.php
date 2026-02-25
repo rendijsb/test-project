@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Requests\Customers;
 
 use App\Models\Customers\Customer;
+use App\Policies\Customers\CustomerPolicy;
 use App\Services\Helpers\ValidationHelper;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -14,7 +15,7 @@ class DeleteCustomerRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return true;
+        return $this->user()->can(CustomerPolicy::DELETE, Customer::class);
     }
 
     public function rules(): array

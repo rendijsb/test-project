@@ -9,11 +9,12 @@ use App\Enums\Users\UserRoleEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     public const TABLE = 'users';
     protected $table = self::TABLE;
@@ -60,5 +61,10 @@ class User extends Authenticatable
             self::PASSWORD => 'hashed',
             self::ROLE => UserRoleEnum::class
         ];
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->getAttribute(self::ROLE) === UserRoleEnum::ADMIN;
     }
 }
