@@ -20,11 +20,11 @@ class OrderRepository
             ->orderBy($sortBy, $sortDirection);
 
         if ($status !== null) {
-            $query->where(Order::STATUS, $status);
+            $query->byStatus($status);
         }
 
         if ($customerId !== null) {
-            $query->where(Order::CUSTOMER_ID, $customerId);
+            $query->byCustomer($customerId);
         }
 
         return $query->paginate($perPage);
@@ -42,7 +42,7 @@ class OrderRepository
         int $perPage,
     ): LengthAwarePaginator {
         return Order::query()
-            ->where(Order::CUSTOMER_ID, $customerId)
+            ->byCustomer($customerId)
             ->orderBy($sortBy, $sortDirection)
             ->paginate($perPage);
     }

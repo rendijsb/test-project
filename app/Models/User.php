@@ -7,6 +7,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Enums\Users\UserRoleEnum;
 use App\Models\Orders\Order;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -63,6 +64,14 @@ class User extends Authenticatable
             self::PASSWORD => 'hashed',
             self::ROLE => UserRoleEnum::class
         ];
+    }
+
+    public function scopeSearch(Builder $query, string $search): Builder
+    {
+        return $query->where(function ($q) use ($search) {
+            $q->where(self::NAME, 'like', '%' . $search . '%')
+                ->orWhere(self::EMAIL, 'like', '%' . $search . '%');
+        });
     }
 
     public function isAdmin(): bool

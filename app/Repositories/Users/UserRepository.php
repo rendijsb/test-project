@@ -18,10 +18,7 @@ class UserRepository
         $query = User::query();
 
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where(User::NAME, 'like', '%' . $search . '%')
-                    ->orWhere(User::EMAIL, 'like', '%' . $search . '%');
-            });
+            $query->search($search);
         }
 
         return $query
