@@ -40,12 +40,27 @@
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Name') }}</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Email') }}</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Phone') }}</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Company') }}</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('City') }}</th>
-                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Country') }}</th>
+                                    @foreach([
+                                        'name' => __('Name'),
+                                        'email' => __('Email'),
+                                        'phone' => __('Phone'),
+                                        'companyName' => __('Company'),
+                                        'city' => __('City'),
+                                        'country' => __('Country'),
+                                    ] as $column => $label)
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                                            <button
+                                                @click="sort('{{ $column }}')"
+                                                class="inline-flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-200"
+                                            >
+                                                {{ $label }}
+                                                <span x-show="sortBy === '{{ $column }}'" class="text-gray-900 dark:text-gray-100">
+                                                    <svg x-show="sortDirection === 'asc'" class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 9.707l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L10 7.828l-3.293 3.293a1 1 0 01-1.414-1.414z"/></svg>
+                                                    <svg x-show="sortDirection === 'desc'" class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M14.707 10.293l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L10 12.172l3.293-3.293a1 1 0 111.414 1.414z"/></svg>
+                                                </span>
+                                            </button>
+                                        </th>
+                                    @endforeach
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Actions') }}</th>
                                 </tr>
                             </thead>
@@ -244,6 +259,8 @@
             return {
                 customers: [],
                 fetchingCustomers: true,
+                sortBy: 'name',
+                sortDirection: 'asc',
                 showFormModal: false,
                 showDeleteModal: false,
                 isEditing: false,
@@ -264,14 +281,36 @@
                 },
 
                 async init() {
+                    await this.fetchCustomers();
+                },
+
+                async fetchCustomers() {
+                    this.fetchingCustomers = true;
+
                     try {
-                        const response = await axios.get('/api/customers');
+                        const response = await axios.get('/api/customers', {
+                            params: {
+                                sortBy: this.sortBy,
+                                sortDirection: this.sortDirection,
+                            },
+                        });
                         this.customers = response.data.data;
                     } catch (error) {
                         toastr.error('Failed to load customers.');
                     } finally {
                         this.fetchingCustomers = false;
                     }
+                },
+
+                sort(column) {
+                    if (this.sortBy === column) {
+                        this.sortDirection = this.sortDirection === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        this.sortBy = column;
+                        this.sortDirection = 'asc';
+                    }
+
+                    this.fetchCustomers();
                 },
 
                 openCreateModal() {
@@ -342,16 +381,14 @@
                         };
 
                         if (this.isEditing) {
-                            const response = await axios.put(`/api/customers/${this.form.id}`, payload);
-                            const updated = response.data.data;
-                            const index = this.customers.findIndex(c => c.id === this.form.id);
-                            if (index !== -1) this.customers[index] = updated;
+                            await axios.put(`/api/customers/${this.form.id}`, payload);
                             toastr.success('Customer updated successfully.');
                         } else {
-                            const response = await axios.post('/api/customers', payload);
-                            this.customers.push(response.data.data);
+                            await axios.post('/api/customers', payload);
                             toastr.success('Customer created successfully.');
                         }
+
+                        await this.fetchCustomers();
 
                         this.closeFormModal();
                     } catch (error) {
@@ -372,10 +409,10 @@
 
                     try {
                         await axios.delete(`/api/customers/${this.customerToDelete.id}`);
-                        this.customers = this.customers.filter(c => c.id !== this.customerToDelete.id);
                         this.showDeleteModal = false;
                         this.customerToDelete = null;
                         toastr.success('Customer deleted successfully.');
+                        await this.fetchCustomers();
                     } catch (error) {
                         if (error.response?.status === 403) {
                             toastr.error('You are not authorized to perform this action.');

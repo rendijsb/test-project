@@ -38,4 +38,9 @@ class ValidationHelper
     {
         return 'min:' . $minLength;
     }
+
+    public static function in(array $values): string
+    {
+        return 'in:' . implode(',', $values);
+    }
 }
