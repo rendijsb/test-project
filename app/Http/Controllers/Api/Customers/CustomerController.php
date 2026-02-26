@@ -13,19 +13,27 @@ use App\Http\Requests\Customers\UpdateCustomerRequest;
 use App\Http\Resources\Customers\CustomerResource;
 use App\Http\Resources\Customers\CustomerResourceCollection;
 use App\Models\Customers\Customer;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Repositories\Customers\CustomerRepository;
 use Illuminate\Http\Response;
 
 class CustomerController extends Controller
 {
+    public function __construct(
+        private readonly CustomerRepository $customerRepository
+    )
+    {
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index(GetAllCustomersRequest $request): CustomerResourceCollection
     {
-        $customers = Customer::query()
-            ->orderBy($request->getSortBy(), $request->getSortDirection())
-            ->paginate($request->getPerPage());
+        $customers = $this->customerRepository->getAll(
+            $request->getSortBy(),
+            $request->getSortDirection(),
+            $request->getPerPage(),
+        );
 
         return $request->responseResource($customers);
     }
@@ -35,7 +43,7 @@ class CustomerController extends Controller
      */
     public function store(CreateCustomerRequest $request): CustomerResource
     {
-        $customer = Customer::query()->create([
+        $customer = $this->customerRepository->create([
             Customer::NAME => $request->getName(),
             Customer::EMAIL => $request->getEmail(),
             Customer::PHONE => $request->getPhone(),
@@ -52,11 +60,10 @@ class CustomerController extends Controller
 
     /**
      * Display the specified resource.
-     * @throws ModelNotFoundException
      */
     public function show(GetCustomerByIdRequest $request): CustomerResource
     {
-        $customer = Customer::query()->findOrFail($request->getCustomerId());
+        $customer = $this->customerRepository->findById($request->getCustomerId());
 
         return $request->responseResource($customer);
     }
@@ -66,9 +73,9 @@ class CustomerController extends Controller
      */
     public function update(UpdateCustomerRequest $request): CustomerResource
     {
-        $customer = Customer::query()->findOrFail($request->getCustomerId());
+        $customer = $this->customerRepository->findById($request->getCustomerId());
 
-        $customer->update([
+        $customer = $this->customerRepository->update($customer, [
             Customer::NAME => $request->getName(),
             Customer::EMAIL => $request->getEmail(),
             Customer::PHONE => $request->getPhone(),
@@ -80,8 +87,6 @@ class CustomerController extends Controller
             Customer::COUNTRY => $request->getCountry(),
         ]);
 
-        $customer->refresh();
-
         return $request->responseResource($customer);
     }
 
@@ -90,9 +95,9 @@ class CustomerController extends Controller
      */
     public function destroy(DeleteCustomerRequest $request): Response
     {
-        $customer = Customer::query()->findOrFail($request->getCustomerId());
+        $customer = $this->customerRepository->findById($request->getCustomerId());
 
-        $customer->delete();
+        $this->customerRepository->delete($customer);
 
         return response()->noContent();
     }
