@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Orders;
+namespace App\Services\Repositories\Orders;
 
 use App\Models\Orders\Order;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;

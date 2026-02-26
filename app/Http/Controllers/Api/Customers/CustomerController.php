@@ -13,7 +13,7 @@ use App\Http\Requests\Customers\UpdateCustomerRequest;
 use App\Http\Resources\Customers\CustomerResource;
 use App\Http\Resources\Customers\CustomerResourceCollection;
 use App\Models\Customers\Customer;
-use App\Repositories\Customers\CustomerRepository;
+use App\Services\Repositories\Customers\CustomerRepository;
 use Illuminate\Http\Response;
 
 class CustomerController extends Controller

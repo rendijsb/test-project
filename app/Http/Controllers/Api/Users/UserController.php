@@ -13,7 +13,7 @@ use App\Http\Requests\Users\UpdateUserRequest;
 use App\Http\Resources\Users\UserResource;
 use App\Http\Resources\Users\UserResourceCollection;
 use App\Models\User;
-use App\Repositories\Users\UserRepository;
+use App\Services\Repositories\Users\UserRepository;
 use Illuminate\Http\Response;
 
 class UserController extends Controller
