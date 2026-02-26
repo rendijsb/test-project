@@ -15,7 +15,7 @@ use App\Http\Requests\Orders\UpdateOrderRequest;
 use App\Http\Resources\Orders\OrderResource;
 use App\Http\Resources\Orders\OrderResourceCollection;
 use App\Models\Orders\Order;
-use App\Repositories\Orders\OrderRepository;
+use App\Services\Repositories\Orders\OrderRepository;
 use Illuminate\Http\Response;
 
 class OrderController extends Controller

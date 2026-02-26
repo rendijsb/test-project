@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Repositories\Users;
+namespace App\Services\Repositories\Users;
 
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
