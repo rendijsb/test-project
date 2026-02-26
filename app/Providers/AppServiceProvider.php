@@ -4,8 +4,10 @@ namespace App\Providers;
 
 use App\Models\Customers\Customer;
 use App\Models\Orders\Order;
+use App\Models\User;
 use App\Policies\Customers\CustomerPolicy;
 use App\Policies\Orders\OrderPolicy;
+use App\Policies\Users\UserPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,5 +28,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Gate::policy(Customer::class, CustomerPolicy::class);
         Gate::policy(Order::class, OrderPolicy::class);
+        Gate::policy(User::class, UserPolicy::class);
     }
 }

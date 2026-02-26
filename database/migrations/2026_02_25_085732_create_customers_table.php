@@ -21,7 +21,6 @@ return new class extends Migration
             $table->string('country', 100);
 
             $table->timestamps();
-            $table->softDeletes();
 
             $table->index('city');
             $table->index('country');
