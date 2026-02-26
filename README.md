@@ -76,7 +76,7 @@ npm run build
 | E-pasts | `test@mail.com` |
 | Parole | `password` |
 
-Sēdētājs izveido arī 50 testa klientus un 30 testa pasūtījumus.
+Sēdētājs izveido arī 50 testa klientus un 30 testa pasūtījumus (ar produktu nosaukumiem un daudzumiem).
 
 ## Funkcionalitāte
 
@@ -87,6 +87,8 @@ Sēdētājs izveido arī 50 testa klientus un 30 testa pasūtījumus.
 ### Pasūtījumu pārvaldība
 - Saraksts ar filtriem pēc **statusa** un **klienta**
 - Statusi: `pending`, `processing`, `completed`, `cancelled`
+- Lauki: produkta nosaukums, daudzums, kopējā summa, apraksts
+- Kārtošana pēc produkta nosaukuma, datuma, summas
 - Izveidošana, rediģēšana un dzēšana
 - Parasts lietotājs var rediģēt tikai savus pasūtījumus
 
@@ -126,6 +128,7 @@ Visi API maršruti pieprasa autentifikāciju ar Laravel Sanctum.
 | DELETE | `/api/orders/{id}` | Dzēst pasūtījumu |
 
 **Pasūtījumu filtri:** `?status=pending`, `?customerId=1`
+**Kārtošana:** `?sortBy=productName&sortDirection=asc`
 
 ### Lietotāji (tikai administrators)
 
@@ -138,6 +141,15 @@ Visi API maršruti pieprasa autentifikāciju ar Laravel Sanctum.
 | DELETE | `/api/users/{id}` | Dzēst lietotāju |
 
 **Lietotāju meklēšana:** `?search=admin`
+
+## Produkcijas vide
+
+**URL:** https://test-project-b.fly.dev
+
+| Lauks | Vērtība |
+|-------|---------|
+| E-pasts | `test@mail.com` |
+| Parole | `password` |
 
 ## Projekta struktūra
 
