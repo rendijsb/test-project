@@ -23,9 +23,11 @@ class CustomerController extends Controller
      */
     public function index(GetAllCustomersRequest $request): CustomerResourceCollection
     {
-        return $request->responseResource(
-            Customer::all()
-        );
+        $customers = Customer::query()
+            ->orderBy($request->getSortBy(), $request->getSortDirection())
+            ->paginate($request->getPerPage());
+
+        return $request->responseResource($customers);
     }
 
     /**

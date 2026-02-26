@@ -4,10 +4,20 @@ declare(strict_types=1);
 
 namespace App\Models\Customers;
 
+use Database\Factories\Customers\CustomerFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
+    /** @use HasFactory<CustomerFactory> */
+    use HasFactory;
+
+    protected static function newFactory(): CustomerFactory
+    {
+        return CustomerFactory::new();
+    }
+
     public const TABLE = 'customers';
     protected $table = self::TABLE;
 
