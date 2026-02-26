@@ -1,0 +1,28 @@
+app = "test-project"
+primary_region = "ams"
+
+[build]
+  dockerfile = "Dockerfile.production"
+
+[http_service]
+  internal_port = 80
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
+[env]
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  APP_URL = "https://test-project.fly.dev"
+  LOG_CHANNEL = "stderr"
+  DB_CONNECTION = "mysql"
+  DB_PORT = "4000"
+  MYSQL_ATTR_SSL_CA = "/etc/ssl/certs/ca-certificates.crt"
+  SESSION_DRIVER = "cookie"
+  CACHE_STORE = "file"
+  QUEUE_CONNECTION = "sync"
