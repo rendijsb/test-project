@@ -29,6 +29,7 @@ class UserController extends Controller
             $request->getSortDirection(),
             $request->getPerPage(),
             $request->getSearch(),
+            auth()->id(),
         );
 
         return $request->responseResource($users);

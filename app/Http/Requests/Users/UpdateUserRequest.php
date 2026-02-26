@@ -21,7 +21,7 @@ class UpdateUserRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user()->can(UserPolicy::UPDATE, User::class);
+        return $this->user()->can(UserPolicy::UPDATE, User::query()->findOrFail($this->getUserId()));
     }
 
     public function rules(): array

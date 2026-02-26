@@ -74,6 +74,11 @@ class User extends Authenticatable
         });
     }
 
+    public function scopeExclude(Builder $query, int $id): Builder
+    {
+        return $query->where(self::ID, '!=', $id);
+    }
+
     public function isAdmin(): bool
     {
         return $this->getAttribute(self::ROLE) === UserRoleEnum::ADMIN;

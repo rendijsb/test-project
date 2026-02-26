@@ -15,7 +15,7 @@ class DeleteUserRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return $this->user()->can(UserPolicy::DELETE, User::class);
+        return $this->user()->can(UserPolicy::DELETE, User::query()->findOrFail($this->getUserId()));
     }
 
     public function rules(): array
