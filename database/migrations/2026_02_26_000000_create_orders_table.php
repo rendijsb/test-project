@@ -19,7 +19,6 @@ return new class extends Migration
             $table->date('order_date');
 
             $table->timestamps();
-            $table->softDeletes();
 
             $table->index('customer_id');
             $table->index('user_id');
