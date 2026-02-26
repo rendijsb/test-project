@@ -25,7 +25,7 @@ class CustomerController extends Controller
     {
         $customers = Customer::query()
             ->orderBy($request->getSortBy(), $request->getSortDirection())
-            ->get();
+            ->paginate($request->getPerPage());
 
         return $request->responseResource($customers);
     }

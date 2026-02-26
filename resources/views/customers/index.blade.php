@@ -36,7 +36,8 @@
                 </template>
 
                 <template x-if="!fetchingCustomers && customers.length > 0">
-                    <div class="overflow-x-auto">
+                    <div>
+                        <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
                             <thead class="bg-gray-50 dark:bg-gray-700">
                                 <tr>
@@ -67,13 +68,13 @@
                             <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                                 <template x-for="customer in customers" :key="customer.id">
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100" x-text="customer.name"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" x-text="customer.email"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" x-text="customer.phone || '—'"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" x-text="customer.companyName || '—'"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" x-text="customer.city"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400" x-text="customer.country"></td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm space-x-2">
+                                        <td class="px-6 py-4 text-sm font-medium text-gray-900 dark:text-gray-100" x-text="customer.name"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="customer.email"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="customer.phone || '—'"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="customer.companyName || '—'"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="customer.city"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="customer.country"></td>
+                                        <td class="px-6 py-4 text-right text-sm space-x-2">
                                             <a
                                                 :href="`/customers/${customer.id}`"
                                                 class="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 font-medium"
@@ -93,6 +94,58 @@
                                 </template>
                             </tbody>
                         </table>
+                        </div>
+
+                        <div class="px-6 py-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <p class="text-sm text-gray-500 dark:text-gray-400">
+                                    {{ __('Showing') }}
+                                    <span x-text="(currentPage - 1) * perPage + 1"></span>–<span x-text="Math.min(currentPage * perPage, total)"></span>
+                                    {{ __('of') }}
+                                    <span x-text="total"></span>
+                                </p>
+
+                                <div class="flex items-center gap-2">
+                                    <label class="text-sm text-gray-500 dark:text-gray-400">{{ __('Per page') }}</label>
+                                    <select
+                                        x-model="perPage"
+                                        @change="changePerPage()"
+                                        class="text-sm border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm"
+                                    >
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <template x-if="lastPage > 1">
+                                <div class="flex items-center gap-1">
+                                    <button
+                                        @click="goToPage(currentPage - 1)"
+                                        :disabled="currentPage === 1"
+                                        class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >&laquo; {{ __('Previous') }}</button>
+
+                                    <template x-for="page in lastPage" :key="page">
+                                        <button
+                                            @click="goToPage(page)"
+                                            :class="page === currentPage
+                                                ? 'bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 border-transparent'
+                                                : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'"
+                                            class="px-3 py-1 text-sm border rounded-md"
+                                            x-text="page"
+                                        ></button>
+                                    </template>
+
+                                    <button
+                                        @click="goToPage(currentPage + 1)"
+                                        :disabled="currentPage === lastPage"
+                                        class="px-3 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >{{ __('Next') }} &raquo;</button>
+                                </div>
+                            </template>
+                        </div>
                     </div>
                 </template>
             </div>
@@ -209,7 +262,6 @@
                 </div>
             </div>
 
-            {{-- Delete Confirmation Modal --}}
             <div
                 x-show="showDeleteModal"
                 x-transition.opacity
@@ -259,6 +311,10 @@
             return {
                 customers: [],
                 fetchingCustomers: true,
+                currentPage: 1,
+                lastPage: 1,
+                total: 0,
+                perPage: 10,
                 sortBy: 'name',
                 sortDirection: 'asc',
                 showFormModal: false,
@@ -290,16 +346,34 @@
                     try {
                         const response = await axios.get('/api/customers', {
                             params: {
+                                page: this.currentPage,
+                                perPage: this.perPage,
                                 sortBy: this.sortBy,
                                 sortDirection: this.sortDirection,
                             },
                         });
                         this.customers = response.data.data;
+                        this.currentPage = response.data.meta.current_page;
+                        this.lastPage = response.data.meta.last_page;
+                        this.total = response.data.meta.total;
                     } catch (error) {
                         toastr.error('Failed to load customers.');
                     } finally {
                         this.fetchingCustomers = false;
                     }
+                },
+
+                goToPage(page) {
+                    if (page < 1 || page > this.lastPage) return;
+
+                    this.currentPage = page;
+                    this.fetchCustomers();
+                },
+
+                changePerPage() {
+                    this.perPage = parseInt(this.perPage);
+                    this.currentPage = 1;
+                    this.fetchCustomers();
                 },
 
                 sort(column) {
@@ -310,6 +384,7 @@
                         this.sortDirection = 'asc';
                     }
 
+                    this.currentPage = 1;
                     this.fetchCustomers();
                 },
 
