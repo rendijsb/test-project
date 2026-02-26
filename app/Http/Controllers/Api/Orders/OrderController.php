@@ -15,31 +15,31 @@ use App\Http\Requests\Orders\UpdateOrderRequest;
 use App\Http\Resources\Orders\OrderResource;
 use App\Http\Resources\Orders\OrderResourceCollection;
 use App\Models\Orders\Order;
+use App\Repositories\Orders\OrderRepository;
 use Illuminate\Http\Response;
 
 class OrderController extends Controller
 {
+    public function __construct(private readonly OrderRepository $orderRepository)
+    {
+    }
+
     public function index(GetAllOrdersRequest $request): OrderResourceCollection
     {
-        $query = Order::query()
-            ->orderBy($request->getSortBy(), $request->getSortDirection());
-
-        if ($request->getStatus() !== null) {
-            $query->where(Order::STATUS, $request->getStatus());
-        }
-
-        if ($request->getCustomerId() !== null) {
-            $query->where(Order::CUSTOMER_ID, $request->getCustomerId());
-        }
-
-        $orders = $query->paginate($request->getPerPage());
+        $orders = $this->orderRepository->getAll(
+            $request->getSortBy(),
+            $request->getSortDirection(),
+            $request->getPerPage(),
+            $request->getStatus(),
+            $request->getCustomerId(),
+        );
 
         return $request->responseResource($orders);
     }
 
     public function store(CreateOrderRequest $request): OrderResource
     {
-        $order = Order::query()->create([
+        $order = $this->orderRepository->create([
             Order::CUSTOMER_ID => $request->getCustomerId(),
             Order::USER_ID => auth()->id(),
             Order::STATUS => $request->getStatus() ?? OrderStatusEnum::PENDING->value,
@@ -53,16 +53,16 @@ class OrderController extends Controller
 
     public function show(GetOrderByIdRequest $request): OrderResource
     {
-        $order = Order::query()->findOrFail($request->getOrderId());
+        $order = $this->orderRepository->findById($request->getOrderId());
 
         return $request->responseResource($order);
     }
 
     public function update(UpdateOrderRequest $request): OrderResource
     {
-        $order = Order::query()->findOrFail($request->getOrderId());
+        $order = $this->orderRepository->findById($request->getOrderId());
 
-        $order->update([
+        $order = $this->orderRepository->update($order, [
             Order::CUSTOMER_ID => $request->getCustomerId(),
             Order::STATUS => $request->getStatus(),
             Order::TOTAL_AMOUNT => $request->getTotalAmount(),
@@ -70,25 +70,25 @@ class OrderController extends Controller
             Order::ORDER_DATE => $request->getOrderDate(),
         ]);
 
-        $order->refresh();
-
         return $request->responseResource($order);
     }
 
     public function destroy(DeleteOrderRequest $request): Response
     {
-        $order = Order::query()->findOrFail($request->getOrderId());
-        $order->delete();
+        $order = $this->orderRepository->findById($request->getOrderId());
+        $this->orderRepository->delete($order);
 
         return response()->noContent();
     }
 
     public function customerOrders(GetCustomerOrdersRequest $request): OrderResourceCollection
     {
-        $orders = Order::query()
-            ->where(Order::CUSTOMER_ID, $request->getCustomerId())
-            ->orderBy($request->getSortBy(), $request->getSortDirection())
-            ->paginate($request->getPerPage());
+        $orders = $this->orderRepository->getByCustomer(
+            $request->getCustomerId(),
+            $request->getSortBy(),
+            $request->getSortDirection(),
+            $request->getPerPage(),
+        );
 
         return $request->responseResource($orders);
     }

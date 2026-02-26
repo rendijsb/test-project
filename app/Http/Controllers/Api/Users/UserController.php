@@ -13,33 +13,30 @@ use App\Http\Requests\Users\UpdateUserRequest;
 use App\Http\Resources\Users\UserResource;
 use App\Http\Resources\Users\UserResourceCollection;
 use App\Models\User;
+use App\Repositories\Users\UserRepository;
 use Illuminate\Http\Response;
 
 class UserController extends Controller
 {
+    public function __construct(private readonly UserRepository $userRepository)
+    {
+    }
+
     public function index(GetAllUsersRequest $request): UserResourceCollection
     {
-        $query = User::query();
-
-        $search = $request->getSearch();
-
-        if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where(User::NAME, 'like', '%' . $search . '%')
-                    ->orWhere(User::EMAIL, 'like', '%' . $search . '%');
-            });
-        }
-
-        $users = $query
-            ->orderBy($request->getSortBy(), $request->getSortDirection())
-            ->paginate($request->getPerPage());
+        $users = $this->userRepository->getAll(
+            $request->getSortBy(),
+            $request->getSortDirection(),
+            $request->getPerPage(),
+            $request->getSearch(),
+        );
 
         return $request->responseResource($users);
     }
 
     public function store(CreateUserRequest $request): UserResource
     {
-        $user = User::query()->create([
+        $user = $this->userRepository->create([
             User::NAME => $request->getName(),
             User::EMAIL => $request->getEmail(),
             User::PASSWORD => $request->getPassword(),
@@ -51,14 +48,14 @@ class UserController extends Controller
 
     public function show(GetUserByIdRequest $request): UserResource
     {
-        $user = User::query()->findOrFail($request->getUserId());
+        $user = $this->userRepository->findById($request->getUserId());
 
         return $request->responseResource($user);
     }
 
     public function update(UpdateUserRequest $request): UserResource
     {
-        $user = User::query()->findOrFail($request->getUserId());
+        $user = $this->userRepository->findById($request->getUserId());
 
         $data = [
             User::NAME => $request->getName(),
@@ -70,17 +67,16 @@ class UserController extends Controller
             $data[User::PASSWORD] = $request->getPassword();
         }
 
-        $user->update($data);
-        $user->refresh();
+        $user = $this->userRepository->update($user, $data);
 
         return $request->responseResource($user);
     }
 
     public function destroy(DeleteUserRequest $request): Response
     {
-        $user = User::query()->findOrFail($request->getUserId());
+        $user = $this->userRepository->findById($request->getUserId());
 
-        $user->delete();
+        $this->userRepository->delete($user);
 
         return response()->noContent();
     }
