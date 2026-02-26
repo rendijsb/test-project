@@ -9,6 +9,7 @@ use App\Models\Customers\Customer;
 use App\Models\User;
 use Database\Factories\Orders\OrderFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -83,6 +84,16 @@ class Order extends Model
     public function getOrderDate(): string
     {
         return $this->getAttribute(self::ORDER_DATE)->toDateString();
+    }
+
+    public function scopeByStatus(Builder $query, string $status): Builder
+    {
+        return $query->where(self::STATUS, $status);
+    }
+
+    public function scopeByCustomer(Builder $query, int $customerId): Builder
+    {
+        return $query->where(self::CUSTOMER_ID, $customerId);
     }
 
     public function customer(): BelongsTo
