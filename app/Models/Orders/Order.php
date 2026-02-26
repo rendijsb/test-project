@@ -31,6 +31,8 @@ class Order extends Model
     public const STATUS = 'status';
     public const TOTAL_AMOUNT = 'total_amount';
     public const DESCRIPTION = 'description';
+    public const PRODUCT_NAME = 'product_name';
+    public const QUANTITY = 'quantity';
     public const ORDER_DATE = 'order_date';
 
     protected $fillable = [
@@ -39,6 +41,8 @@ class Order extends Model
         self::STATUS,
         self::TOTAL_AMOUNT,
         self::DESCRIPTION,
+        self::PRODUCT_NAME,
+        self::QUANTITY,
         self::ORDER_DATE,
     ];
 
@@ -79,6 +83,16 @@ class Order extends Model
     public function getDescription(): ?string
     {
         return $this->getAttribute(self::DESCRIPTION);
+    }
+
+    public function getProductName(): string
+    {
+        return $this->getAttribute(self::PRODUCT_NAME);
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->getAttribute(self::QUANTITY);
     }
 
     public function getOrderDate(): string

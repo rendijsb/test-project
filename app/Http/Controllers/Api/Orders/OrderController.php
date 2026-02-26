@@ -45,6 +45,8 @@ class OrderController extends Controller
             Order::STATUS => $request->getStatus() ?? OrderStatusEnum::PENDING->value,
             Order::TOTAL_AMOUNT => $request->getTotalAmount(),
             Order::DESCRIPTION => $request->getDescription(),
+            Order::PRODUCT_NAME => $request->getProductName(),
+            Order::QUANTITY => $request->getQuantity(),
             Order::ORDER_DATE => $request->getOrderDate(),
         ]);
 
@@ -67,6 +69,8 @@ class OrderController extends Controller
             Order::STATUS => $request->getStatus(),
             Order::TOTAL_AMOUNT => $request->getTotalAmount(),
             Order::DESCRIPTION => $request->getDescription(),
+            Order::PRODUCT_NAME => $request->getProductName(),
+            Order::QUANTITY => $request->getQuantity(),
             Order::ORDER_DATE => $request->getOrderDate(),
         ]);
 

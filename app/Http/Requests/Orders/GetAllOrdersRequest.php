@@ -33,6 +33,7 @@ class GetAllOrdersRequest extends FormRequest
         'status' => Order::STATUS,
         'totalAmount' => Order::TOTAL_AMOUNT,
         'customerId' => Order::CUSTOMER_ID,
+        'productName' => Order::PRODUCT_NAME,
     ];
 
     public function authorize(): bool

@@ -71,6 +71,7 @@
                                 <tr>
                                     @foreach([
                                         'orderDate' => __('Order Date'),
+                                        'productName' => __('Product'),
                                         'status' => __('Status'),
                                         'totalAmount' => __('Total'),
                                         'customerId' => __('Customer'),
@@ -88,6 +89,7 @@
                                             </button>
                                         </th>
                                     @endforeach
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Qty') }}</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Description') }}</th>
                                     <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">{{ __('Actions') }}</th>
                                 </tr>
@@ -96,6 +98,7 @@
                                 <template x-for="order in orders" :key="order.id">
                                     <tr class="hover:bg-gray-50 dark:hover:bg-gray-700/50">
                                         <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100" x-text="order.orderDate"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-gray-100" x-text="order.productName"></td>
                                         <td class="px-6 py-4 text-sm">
                                             <span
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
@@ -110,6 +113,7 @@
                                         </td>
                                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="'$' + parseFloat(order.totalAmount).toFixed(2)"></td>
                                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="getCustomerName(order.customerId)"></td>
+                                        <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400" x-text="order.quantity"></td>
                                         <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400 max-w-xs truncate" x-text="order.description || '—'"></td>
                                         <td class="px-6 py-4 text-right text-sm space-x-2">
                                             <a
@@ -236,6 +240,20 @@
                                     </template>
                                 </div>
                                 <div>
+                                    <x-input-label value="{{ __('Product Name') }}" />
+                                    <input type="text" x-model="form.productName" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm text-sm" required>
+                                    <template x-if="errors.productName">
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400" x-text="errors.productName[0]"></p>
+                                    </template>
+                                </div>
+                                <div>
+                                    <x-input-label value="{{ __('Quantity') }}" />
+                                    <input type="number" min="1" x-model="form.quantity" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm text-sm" required>
+                                    <template x-if="errors.quantity">
+                                        <p class="mt-1 text-sm text-red-600 dark:text-red-400" x-text="errors.quantity[0]"></p>
+                                    </template>
+                                </div>
+                                <div>
                                     <x-input-label value="{{ __('Total Amount') }}" />
                                     <input type="number" step="0.01" min="0" x-model="form.totalAmount" class="mt-1 block w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm text-sm" required>
                                     <template x-if="errors.totalAmount">
@@ -353,6 +371,8 @@
                     id: null,
                     customerId: '',
                     status: 'pending',
+                    productName: '',
+                    quantity: 1,
                     totalAmount: '',
                     description: '',
                     orderDate: '',
@@ -456,6 +476,8 @@
                         id: order.id,
                         customerId: order.customerId,
                         status: order.status,
+                        productName: order.productName,
+                        quantity: order.quantity,
                         totalAmount: order.totalAmount,
                         description: order.description || '',
                         orderDate: order.orderDate,
@@ -478,6 +500,8 @@
                         id: null,
                         customerId: '',
                         status: 'pending',
+                        productName: '',
+                        quantity: 1,
                         totalAmount: '',
                         description: '',
                         orderDate: '',
@@ -493,6 +517,8 @@
                         const payload = {
                             customerId: parseInt(this.form.customerId),
                             status: this.form.status,
+                            productName: this.form.productName,
+                            quantity: parseInt(this.form.quantity),
                             totalAmount: this.form.totalAmount,
                             description: this.form.description || null,
                             orderDate: this.form.orderDate,
