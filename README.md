@@ -78,6 +78,28 @@ npm run build
 
 Sēdētājs izveido arī 50 testa klientus un 30 testa pasūtījumus.
 
+## Funkcionalitāte
+
+### Klientu pārvaldība
+- Saraksts ar kārtošanu un lapošanu
+- Izveidošana, rediģēšana un dzēšana (tikai administrators)
+
+### Pasūtījumu pārvaldība
+- Saraksts ar filtriem pēc **statusa** un **klienta**
+- Statusi: `pending`, `processing`, `completed`, `cancelled`
+- Izveidošana, rediģēšana un dzēšana
+- Parasts lietotājs var rediģēt tikai savus pasūtījumus
+
+### Lietotāju pārvaldība (administrators)
+- Pilns CRUD lietotāju kontiem
+- Lomu piešķiršana (`admin` / `user`)
+
+### Autorizācija (Policies)
+- Tikai **administrators** var izveidot, rediģēt un dzēst klientus
+- Tikai **administrators** vai **pasūtījuma īpašnieks** var rediģēt pasūtījumu
+- Tikai **administrators** var dzēst pasūtījumus
+- Tikai **administrators** var pārvaldīt lietotājus
+
 ## REST API
 
 Visi API maršruti pieprasa autentifikāciju ar Laravel Sanctum.
@@ -130,6 +152,5 @@ app/
 │   └── Resources/      # JSON API resursi
 ├── Models/             # Eloquent modeļi ar relācijām un query scopes
 ├── Policies/           # Autorizācijas politikas
-└── Services/
-    └── Repositories/   # Datu piekļuves slānis (Repository pattern)
+└── Repositories/       # Datu piekļuves slānis (Repository pattern)
 ```
