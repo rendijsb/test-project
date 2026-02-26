@@ -34,13 +34,13 @@ class UserPolicy
         return $user->isAdmin();
     }
 
-    public function update(User $user): bool
+    public function update(User $user, User $target): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() && $user->getKey() !== $target->getKey();
     }
 
-    public function delete(User $user): bool
+    public function delete(User $user, User $target): bool
     {
-        return $user->isAdmin();
+        return $user->isAdmin() && $user->getKey() !== $target->getKey();
     }
 }

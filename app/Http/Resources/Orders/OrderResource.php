@@ -20,6 +20,8 @@ class OrderResource extends JsonResource
             'status' => $this->resource->getStatus()->value,
             'totalAmount' => $this->resource->getTotalAmount(),
             'description' => $this->resource->getDescription(),
+            'productName' => $this->resource->getProductName(),
+            'quantity' => $this->resource->getQuantity(),
             'orderDate' => $this->resource->getOrderDate(),
         ];
     }

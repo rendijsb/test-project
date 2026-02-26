@@ -28,6 +28,8 @@ class OrderFactory extends Factory
             Order::STATUS => $this->faker->randomElement(OrderStatusEnum::cases())->value,
             Order::TOTAL_AMOUNT => $this->faker->randomFloat(2, 10, 5000),
             Order::DESCRIPTION => $this->faker->optional()->sentence(),
+            Order::PRODUCT_NAME => $this->faker->words(3, true),
+            Order::QUANTITY => $this->faker->numberBetween(1, 100),
             Order::ORDER_DATE => $this->faker->dateTimeBetween('-1 year', 'now')->format('Y-m-d'),
         ];
     }

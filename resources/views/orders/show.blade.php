@@ -48,6 +48,14 @@
                                 </dd>
                             </div>
                             <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Product Name') }}</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100" x-text="order.productName"></dd>
+                            </div>
+                            <div>
+                                <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Quantity') }}</dt>
+                                <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100" x-text="order.quantity"></dd>
+                            </div>
+                            <div>
                                 <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">{{ __('Total Amount') }}</dt>
                                 <dd class="mt-1 text-sm text-gray-900 dark:text-gray-100" x-text="'$' + parseFloat(order.totalAmount).toFixed(2)"></dd>
                             </div>

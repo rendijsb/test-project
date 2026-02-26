@@ -14,8 +14,13 @@ class UserRepository
         string $sortDirection,
         int $perPage,
         ?string $search = null,
+        ?int $excludeId = null,
     ): LengthAwarePaginator {
         $query = User::query();
+
+        if ($excludeId !== null) {
+            $query->exclude($excludeId);
+        }
 
         if ($search) {
             $query->search($search);
