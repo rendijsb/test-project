@@ -51,22 +51,16 @@ Tiek palaisti divi servisi:
 - **app** — PHP 8.4 + Apache uz `http://localhost:8000`
 - **mysql** — MySQL 8.0 uz porta `3306`
 
-### 5. Palaist migrācijas un ievietot testa datus
-
-```bash
-docker compose exec app php artisan migrate --seed
-```
-
-### 6. Kompilēt priekšgala resursus
-
-```bash
-npm run dev
-```
-
-Produkcijai:
+### 5. Kompilēt priekšgala resursus
 
 ```bash
 npm run build
+```
+
+### 6. Palaist migrācijas un ievietot testa datus
+
+```bash
+docker compose exec app php artisan migrate --seed
 ```
 
 ## Noklusējuma administratora konts
